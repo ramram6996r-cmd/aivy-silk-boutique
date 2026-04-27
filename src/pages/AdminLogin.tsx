@@ -74,8 +74,14 @@ const AdminLogin = () => {
             disabled={loading}
             className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-section font-semibold uppercase tracking-wider text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            {loading ? 'Signing in…' : 'Sign In'}
+            {loading ? (mode === 'signup' ? 'Creating…' : 'Signing in…') : (mode === 'signup' ? 'Create Admin' : 'Sign In')}
           </button>
+          <p className="text-center text-xs text-muted-foreground font-section pt-2">
+            {mode === 'login' ? 'First time? ' : 'Already have an account? '}
+            <button type="button" onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); }} className="text-primary hover:underline">
+              {mode === 'login' ? 'Create admin account' : 'Sign in'}
+            </button>
+          </p>
         </form>
       </div>
     </div>
