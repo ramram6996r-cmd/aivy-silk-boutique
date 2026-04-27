@@ -1,19 +1,19 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Product } from '@/data/products';
+import { FirestoreProduct } from '@/lib/products';
+
+export type CartProduct = Pick<FirestoreProduct, 'id' | 'name' | 'slug' | 'price' | 'images' | 'fabric'>;
 
 interface CartItem {
-  product: Product;
+  product: CartProduct;
   quantity: number;
 }
 
 interface StoreContextType {
   cart: CartItem[];
-  wishlist: string[];
   isCartOpen: boolean;
-  addToCart: (product: Product) => void;
+  addToCart: (product: CartProduct) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
-  toggleWishlist: (productId: string) => void;
   setCartOpen: (open: boolean) => void;
   cartTotal: number;
   cartCount: number;
@@ -23,10 +23,9 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<string[]>([]);
   const [isCartOpen, setCartOpen] = useState(false);
 
-  const addToCart = useCallback((product: Product) => {
+  const addToCart = useCallback((product: CartProduct) => {
     setCart(prev => {
       const existing = prev.find(i => i.product.id === product.id);
       if (existing) return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
@@ -44,15 +43,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setCart(prev => prev.map(i => i.product.id === productId ? { ...i, quantity } : i));
   }, [removeFromCart]);
 
-  const toggleWishlist = useCallback((productId: string) => {
-    setWishlist(prev => prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]);
-  }, []);
-
   const cartTotal = cart.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const cartCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <StoreContext.Provider value={{ cart, wishlist, isCartOpen, addToCart, removeFromCart, updateQuantity, toggleWishlist, setCartOpen, cartTotal, cartCount }}>
+    <StoreContext.Provider value={{ cart, isCartOpen, addToCart, removeFromCart, updateQuantity, setCartOpen, cartTotal, cartCount }}>
       {children}
     </StoreContext.Provider>
   );
