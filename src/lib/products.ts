@@ -8,6 +8,8 @@ import {
   deleteDoc,
   query,
   orderBy,
+  where,
+  limit,
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
@@ -48,9 +50,10 @@ export async function fetchProducts(): Promise<FirestoreProduct[]> {
 }
 
 export async function fetchProductBySlug(slug: string): Promise<FirestoreProduct | null> {
-  const snap = await getDocs(collection(db, COL));
-  const found = snap.docs.find(d => (d.data() as FirestoreProduct).slug === slug);
-  return found ? ({ id: found.id, ...(found.data() as Omit<FirestoreProduct, 'id'>) }) : null;
+  const q = query(collection(db, COL), where('slug', '==', slug), limit(1));
+  const snap = await getDocs(q);
+  const d = snap.docs[0];
+  return d ? ({ id: d.id, ...(d.data() as Omit<FirestoreProduct, 'id'>) }) : null;
 }
 
 export async function fetchProductById(id: string): Promise<FirestoreProduct | null> {
