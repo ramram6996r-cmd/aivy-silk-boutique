@@ -1,5 +1,7 @@
 import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 import logo from '@/assets/logo.jpg';
 
@@ -10,6 +12,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
 
   useEffect(() => {
     if (user) navigate('/admin-dashboard', { replace: true });
@@ -20,7 +23,11 @@ const AdminLogin = () => {
     setError('');
     setLoading(true);
     try {
-      await login(email.trim(), password);
+      if (mode === 'signup') {
+        await createUserWithEmailAndPassword(auth, email.trim(), password);
+      } else {
+        await login(email.trim(), password);
+      }
       navigate('/admin-dashboard', { replace: true });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Login failed';
