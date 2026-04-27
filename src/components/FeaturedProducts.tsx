@@ -1,22 +1,16 @@
-import { useEffect, useState } from 'react';
-import { fetchProducts, FirestoreProduct } from '@/lib/products';
+import { useQuery } from '@tanstack/react-query';
+import { fetchProducts } from '@/lib/products';
 import ProductCard from './ProductCard';
 import { Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 
 const FeaturedProducts = () => {
-  const [products, setProducts] = useState<FirestoreProduct[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchProducts()
-      .then(list => {
-        const featured = list.filter(p => p.badge === 'bestseller' || p.badge === 'new');
-        setProducts((featured.length ? featured : list).slice(0, 4));
-      })
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: list = [], isLoading: loading } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  });
+  const featured = list.filter(p => p.badge === 'bestseller' || p.badge === 'new');
+  const products = (featured.length ? featured : list).slice(0, 4);
 
   return (
     <section className="py-20 px-4 bg-muted/30">
