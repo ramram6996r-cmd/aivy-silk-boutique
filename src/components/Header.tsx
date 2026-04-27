@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, User, Heart, ShoppingBag, Menu, X, ChevronDown } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X, ChevronDown } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
 import logo from '@/assets/logo.jpg';
 
@@ -11,7 +11,7 @@ const megaMenuData = {
 };
 
 const Header = () => {
-  const { cartCount, wishlist, setCartOpen } = useStore();
+  const { cartCount, setCartOpen } = useStore();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
@@ -83,12 +83,6 @@ const Header = () => {
             <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 hover:text-primary transition-colors">
               <Search size={20} />
             </button>
-            <Link to="/wishlist" className="p-2 hover:text-primary transition-colors relative hidden sm:block">
-              <Heart size={20} />
-              {wishlist.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{wishlist.length}</span>
-              )}
-            </Link>
             <button onClick={() => setCartOpen(true)} className="p-2 hover:text-primary transition-colors relative">
               <ShoppingBag size={20} />
               {cartCount > 0 && (
@@ -117,7 +111,6 @@ const Header = () => {
               <Link to="/" onClick={() => setMobileOpen(false)} className="py-2 hover:text-primary">Home</Link>
               <Link to="/collections" onClick={() => setMobileOpen(false)} className="py-2 hover:text-primary">Collections</Link>
               <Link to="/collections" onClick={() => setMobileOpen(false)} className="py-2 hover:text-primary">New Arrivals</Link>
-              <Link to="/wishlist" onClick={() => setMobileOpen(false)} className="py-2 hover:text-primary">Wishlist</Link>
             </nav>
           </div>
         )}
