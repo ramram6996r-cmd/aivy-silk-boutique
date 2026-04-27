@@ -1,30 +1,47 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import { products, fabrics, occasions } from '@/data/products';
-import { X, SlidersHorizontal } from 'lucide-react';
+import { fetchProducts, FirestoreProduct } from '@/lib/products';
+import { CATEGORIES, getSubcategories } from '@/data/categories';
+import { X, SlidersHorizontal, Loader2 } from 'lucide-react';
 
 const Collections = () => {
   const [searchParams] = useSearchParams();
   const initialFilter = searchParams.get('filter') || '';
-  const [selectedFabric, setSelectedFabric] = useState(fabrics.includes(initialFilter) ? initialFilter : '');
-  const [selectedOccasion, setSelectedOccasion] = useState(occasions.includes(initialFilter) ? initialFilter : '');
+  const [products, setProducts] = useState<FirestoreProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState(initialFilter);
   const [sortBy, setSortBy] = useState('relevance');
   const [showFilters, setShowFilters] = useState(false);
 
+  useEffect(() => {
+    fetchProducts()
+      .then(setProducts)
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   const filtered = useMemo(() => {
     let result = [...products];
-    if (selectedFabric) result = result.filter(p => p.fabric === selectedFabric);
-    if (selectedOccasion) result = result.filter(p => p.occasion === selectedOccasion);
+    if (selectedCategory) result = result.filter(p => p.category === selectedCategory);
+    if (selectedSubcategory) {
+      result = result.filter(p =>
+        p.subcategory === selectedSubcategory ||
+        p.fabric === selectedSubcategory ||
+        p.occasion === selectedSubcategory,
+      );
+    }
     if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
     if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
     if (sortBy === 'newest') result.sort((a, b) => (b.badge === 'new' ? 1 : 0) - (a.badge === 'new' ? 1 : 0));
     return result;
-  }, [selectedFabric, selectedOccasion, sortBy]);
+  }, [products, selectedCategory, selectedSubcategory, sortBy]);
 
-  const activeFilters = [selectedFabric, selectedOccasion].filter(Boolean);
+  const activeFilters = [selectedCategory, selectedSubcategory].filter(Boolean);
+  const subOptions = selectedCategory ? getSubcategories(selectedCategory) : [];
 
   return (
     <div className="min-h-screen">
@@ -44,7 +61,7 @@ const Collections = () => {
             {activeFilters.map(f => (
               <span key={f} className="flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-section">
                 {f}
-                <button onClick={() => { if (f === selectedFabric) setSelectedFabric(''); else setSelectedOccasion(''); }}><X size={12} /></button>
+                <button onClick={() => { if (f === selectedCategory) setSelectedCategory(''); else setSelectedSubcategory(''); }}><X size={12} /></button>
               </span>
             ))}
           </div>
@@ -60,39 +77,47 @@ const Collections = () => {
           {/* Sidebar filters */}
           <aside className={`${showFilters ? 'block' : 'hidden'} md:block w-full md:w-56 flex-shrink-0 space-y-6`}>
             <div>
-              <h4 className="font-section font-semibold text-sm uppercase tracking-wider mb-3">Fabric</h4>
+              <h4 className="font-section font-semibold text-sm uppercase tracking-wider mb-3">Category</h4>
               <div className="space-y-2">
-                {fabrics.map(f => (
-                  <button key={f} onClick={() => setSelectedFabric(selectedFabric === f ? '' : f)} className={`block w-full text-left px-3 py-2 rounded text-sm font-body transition-colors ${selectedFabric === f ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}>
-                    {f}
+                {CATEGORIES.map(c => (
+                  <button key={c} onClick={() => { setSelectedCategory(selectedCategory === c ? '' : c); setSelectedSubcategory(''); }} className={`block w-full text-left px-3 py-2 rounded text-sm font-body transition-colors ${selectedCategory === c ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}>
+                    {c}
                   </button>
                 ))}
               </div>
             </div>
-            <div>
-              <h4 className="font-section font-semibold text-sm uppercase tracking-wider mb-3">Occasion</h4>
-              <div className="space-y-2">
-                {occasions.map(o => (
-                  <button key={o} onClick={() => setSelectedOccasion(selectedOccasion === o ? '' : o)} className={`block w-full text-left px-3 py-2 rounded text-sm font-body transition-colors ${selectedOccasion === o ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}>
-                    {o}
-                  </button>
-                ))}
+            {subOptions.length > 0 && (
+              <div>
+                <h4 className="font-section font-semibold text-sm uppercase tracking-wider mb-3">Type</h4>
+                <div className="space-y-2">
+                  {subOptions.map(s => (
+                    <button key={s} onClick={() => setSelectedSubcategory(selectedSubcategory === s ? '' : s)} className={`block w-full text-left px-3 py-2 rounded text-sm font-body transition-colors ${selectedSubcategory === s ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}`}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </aside>
 
           {/* Grid */}
           <div className="flex-1">
-            <p className="text-sm text-muted-foreground mb-4">{filtered.length} products</p>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {filtered.map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
-              ))}
-            </div>
-            {filtered.length === 0 && (
-              <div className="text-center py-20">
-                <p className="text-muted-foreground font-section">No products found. Try adjusting your filters.</p>
-              </div>
+            {loading ? (
+              <div className="flex justify-center py-20"><Loader2 className="animate-spin text-primary" /></div>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground mb-4">{filtered.length} products</p>
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {filtered.map((product, i) => (
+                    <ProductCard key={product.id} product={product} index={i} />
+                  ))}
+                </div>
+                {filtered.length === 0 && (
+                  <div className="text-center py-20">
+                    <p className="text-muted-foreground font-section">No products found. {products.length === 0 ? 'Add products from the admin panel to get started.' : 'Try adjusting your filters.'}</p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

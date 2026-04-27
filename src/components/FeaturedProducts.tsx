@@ -1,9 +1,22 @@
-import { products } from '@/data/products';
+import { useEffect, useState } from 'react';
+import { fetchProducts, FirestoreProduct } from '@/lib/products';
 import ProductCard from './ProductCard';
 import { Link } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 
 const FeaturedProducts = () => {
-  const featured = products.filter(p => p.badge === 'bestseller' || p.badge === 'new').slice(0, 4);
+  const [products, setProducts] = useState<FirestoreProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts()
+      .then(list => {
+        const featured = list.filter(p => p.badge === 'bestseller' || p.badge === 'new');
+        setProducts((featured.length ? featured : list).slice(0, 4));
+      })
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <section className="py-20 px-4 bg-muted/30">
@@ -12,11 +25,17 @@ const FeaturedProducts = () => {
           <p className="font-section text-secondary text-xs uppercase tracking-[0.3em] mb-2">Handpicked for You</p>
           <h2 className="font-heading text-h2 font-bold">Featured Collection</h2>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {featured.map((product, i) => (
-            <ProductCard key={product.id} product={product} index={i} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" /></div>
+        ) : products.length === 0 ? (
+          <p className="text-center text-muted-foreground font-section py-12">New collection coming soon.</p>
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {products.map((product, i) => (
+              <ProductCard key={product.id} product={product} index={i} />
+            ))}
+          </div>
+        )}
         <div className="text-center mt-12">
           <Link to="/collections" className="inline-block px-8 py-3 border-2 border-primary text-primary font-section font-semibold text-sm uppercase tracking-wider rounded hover:bg-primary hover:text-primary-foreground transition-colors">
             View All Collections

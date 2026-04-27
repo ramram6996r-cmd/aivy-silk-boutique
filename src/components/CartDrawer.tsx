@@ -38,7 +38,11 @@ const CartDrawer = () => {
                 cart.map(item => (
                   <div key={item.product.id} className="flex gap-4 p-3 bg-muted/50 rounded-lg">
                     <div className="w-20 h-24 bg-muted rounded overflow-hidden flex-shrink-0">
-                      <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/20 flex items-center justify-center text-xs text-muted-foreground font-section">Saree</div>
+                      {item.product.images?.[0] ? (
+                        <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/20 flex items-center justify-center text-xs text-muted-foreground font-section">{item.product.fabric || 'Saree'}</div>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-heading text-sm font-semibold truncate">{item.product.name}</h4>
