@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchProductBySlug, FirestoreProduct } from '@/lib/products';
+import { useQuery } from '@tanstack/react-query';
+import { fetchProductBySlug } from '@/lib/products';
 import { useStore } from '@/context/StoreContext';
 import { formatPrice, getProductWhatsAppUrl } from '@/lib/whatsapp';
 import Header from '@/components/Header';
@@ -11,20 +12,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const ProductDetail = () => {
   const { slug } = useParams();
   const { addToCart } = useStore();
-  const [product, setProduct] = useState<FirestoreProduct | null>(null);
-  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
 
-  useEffect(() => {
-    let mounted = true;
-    if (!slug) return;
-    setLoading(true);
-    fetchProductBySlug(slug)
-      .then(p => { if (mounted) setProduct(p); })
-      .finally(() => { if (mounted) setLoading(false); });
-    return () => { mounted = false; };
-  }, [slug]);
+  const { data: product, isLoading: loading } = useQuery({
+    queryKey: ['product', slug],
+    queryFn: () => fetchProductBySlug(slug!),
+    enabled: !!slug,
+  });
 
   if (loading) {
     return (

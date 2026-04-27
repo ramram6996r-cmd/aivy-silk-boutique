@@ -1,28 +1,24 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import { fetchProducts, FirestoreProduct } from '@/lib/products';
+import { fetchProducts } from '@/lib/products';
 import { CATEGORIES, getSubcategories } from '@/data/categories';
 import { X, SlidersHorizontal, Loader2 } from 'lucide-react';
 
 const Collections = () => {
   const [searchParams] = useSearchParams();
   const initialFilter = searchParams.get('filter') || '';
-  const [products, setProducts] = useState<FirestoreProduct[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: products = [], isLoading: loading } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  });
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState(initialFilter);
   const [sortBy, setSortBy] = useState('relevance');
   const [showFilters, setShowFilters] = useState(false);
-
-  useEffect(() => {
-    fetchProducts()
-      .then(setProducts)
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
-  }, []);
 
   const filtered = useMemo(() => {
     let result = [...products];
