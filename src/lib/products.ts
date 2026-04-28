@@ -13,8 +13,8 @@ import {
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from './firebase';
+import { db } from './firebase';
+import { uploadManyToCloudinary } from './cloudinary';
 
 export interface FirestoreProduct {
   id: string;
@@ -71,16 +71,14 @@ export async function createProduct(
   data: Omit<FirestoreProduct, 'id' | 'createdAt' | 'images'>,
   files: File[],
 ): Promise<string> {
+  // Upload to Cloudinary FIRST (per requirements), then save product with image URLs.
+  const images = files.length ? await uploadManyToCloudinary(files) : [];
   const docRef = await addDoc(collection(db, COL), {
     ...data,
     slug: data.slug || slugify(data.name),
-    images: [],
+    images,
     createdAt: serverTimestamp(),
   });
-  if (files.length) {
-    const urls = await uploadProductImages(docRef.id, files);
-    await updateDoc(doc(db, COL, docRef.id), { images: urls });
-  }
   return docRef.id;
 }
 
@@ -91,7 +89,7 @@ export async function updateProduct(
 ): Promise<void> {
   const update: Record<string, unknown> = { ...data };
   if (newFiles && newFiles.length) {
-    const urls = await uploadProductImages(id, newFiles);
+    const urls = await uploadManyToCloudinary(newFiles);
     update.images = [...(data.images || []), ...urls];
   }
   await updateDoc(doc(db, COL, id), update);
@@ -101,25 +99,7 @@ export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, COL, id));
 }
 
-export async function uploadProductImages(productId: string, files: File[]): Promise<string[]> {
-  const urls: string[] = [];
-  for (const file of files) {
-    const path = `products/${productId}/${Date.now()}-${file.name}`;
-    const r = ref(storage, path);
-    await uploadBytes(r, file);
-    urls.push(await getDownloadURL(r));
-  }
-  return urls;
-}
-
 export async function removeImageFromProduct(id: string, url: string, currentImages: string[]) {
   const next = currentImages.filter(u => u !== url);
   await updateDoc(doc(db, COL, id), { images: next });
-  try {
-    // best-effort storage delete
-    const path = decodeURIComponent(new URL(url).pathname.split('/o/')[1]?.split('?')[0] || '');
-    if (path) await deleteObject(ref(storage, path));
-  } catch {
-    /* ignore */
-  }
 }
