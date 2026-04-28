@@ -12,6 +12,7 @@ import {
 import { CATEGORIES, CATEGORY_TREE } from '@/data/categories';
 import { Plus, Pencil, Trash2, X, Upload, LogOut, Loader2 } from 'lucide-react';
 import logo from '@/assets/logo.jpg';
+import BannerManager from '@/components/admin/BannerManager';
 
 const emptyForm = {
   name: '',
@@ -31,6 +32,7 @@ const emptyForm = {
 
 const AdminDashboard = () => {
   const { logout, user } = useAuth();
+  const [tab, setTab] = useState<'products' | 'banners'>('products');
   const [products, setProducts] = useState<FirestoreProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -148,6 +150,12 @@ const AdminDashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        <div className="flex gap-2 mb-6 border-b border-border">
+          <button onClick={() => setTab('products')} className={`px-4 py-2 font-section text-sm font-semibold border-b-2 -mb-px transition-colors ${tab === 'products' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Products</button>
+          <button onClick={() => setTab('banners')} className={`px-4 py-2 font-section text-sm font-semibold border-b-2 -mb-px transition-colors ${tab === 'banners' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>Offer Banners</button>
+        </div>
+
+        {tab === 'banners' ? <BannerManager /> : <>
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="font-heading text-2xl font-bold">Products</h2>
@@ -207,6 +215,7 @@ const AdminDashboard = () => {
             </table>
           </div>
         )}
+        </>}
       </main>
 
       {showForm && (

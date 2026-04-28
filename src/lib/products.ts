@@ -44,9 +44,14 @@ export const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
 export async function fetchProducts(): Promise<FirestoreProduct[]> {
-  const q = query(collection(db, COL), orderBy('createdAt', 'desc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<FirestoreProduct, 'id'>) }));
+  try {
+    const q = query(collection(db, COL), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<FirestoreProduct, 'id'>) }));
+  } catch (e) {
+    console.warn('[products] fetch failed:', e);
+    return [];
+  }
 }
 
 export async function fetchProductBySlug(slug: string): Promise<FirestoreProduct | null> {
