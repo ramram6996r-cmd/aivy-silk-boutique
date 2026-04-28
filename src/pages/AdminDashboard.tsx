@@ -215,6 +215,7 @@ const AdminDashboard = () => {
             </table>
           </div>
         )}
+        </>}
       </main>
 
       {showForm && (
