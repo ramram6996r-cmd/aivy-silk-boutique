@@ -1,12 +1,18 @@
 import { Link } from 'react-router-dom';
+import wedding from '@/assets/occ-wedding.jpg';
+import festive from '@/assets/occ-festive.jpg';
+import office from '@/assets/occ-office.jpg';
+import casual from '@/assets/occ-casual.jpg';
+import party from '@/assets/occ-party.jpg';
+import reception from '@/assets/occ-reception.jpg';
 
 const OCCASIONS = [
-  { name: 'Wedding', emoji: '💍', tint: 'bg-burgundy/10 text-burgundy' },
-  { name: 'Festive', emoji: '🪔', tint: 'bg-secondary/15 text-secondary' },
-  { name: 'Office', emoji: '💼', tint: 'bg-navy/10 text-navy' },
-  { name: 'Casual', emoji: '☀️', tint: 'bg-emerald/10 text-emerald' },
-  { name: 'Party', emoji: '🥂', tint: 'bg-burgundy/10 text-burgundy' },
-  { name: 'Reception', emoji: '✨', tint: 'bg-secondary/15 text-secondary' },
+  { name: 'Wedding', img: wedding },
+  { name: 'Festive', img: festive },
+  { name: 'Office', img: office },
+  { name: 'Casual', img: casual },
+  { name: 'Party', img: party },
+  { name: 'Reception', img: reception },
 ];
 
 const OccasionShop = () => (
@@ -21,10 +27,22 @@ const OccasionShop = () => (
           <Link
             key={o.name}
             to={`/collections?filter=${encodeURIComponent(o.name)}`}
-            className={`${o.tint} rounded-xl p-4 flex flex-col items-center justify-center aspect-square hover:scale-105 transition-transform shadow-sm`}
+            className="group relative rounded-xl overflow-hidden aspect-square shadow-sm hover:shadow-luxury transition-all"
           >
-            <span className="text-3xl md:text-4xl mb-1">{o.emoji}</span>
-            <span className="font-section text-[11px] md:text-xs font-bold uppercase tracking-wider">{o.name}</span>
+            <img
+              src={o.img}
+              alt={o.name}
+              loading="lazy"
+              width={512}
+              height={512}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-3 text-center">
+              <span className="font-section text-[11px] md:text-xs font-bold uppercase tracking-wider text-white">
+                {o.name}
+              </span>
+            </div>
           </Link>
         ))}
       </div>
