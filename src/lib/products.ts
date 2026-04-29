@@ -27,9 +27,11 @@ export interface FirestoreProduct {
   description: string;
   details?: string;
   care?: string;
-  fabric: string;
-  occasion: string;
+  fabric?: string;
+  occasion?: string;
   color?: string;
+  material?: string;
+  weight?: string;
   stock: boolean;
   badge?: 'new' | 'bestseller' | null;
   images: string[];
