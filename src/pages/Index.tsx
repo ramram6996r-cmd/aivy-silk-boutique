@@ -5,7 +5,7 @@ import CategoryTiles from '@/components/CategoryTiles';
 import OccasionShop from '@/components/OccasionShop';
 import OfferBanner from '@/components/OfferBanner';
 import MarketplaceGrid from '@/components/MarketplaceGrid';
-import InstagramCTA from '@/components/InstagramCTA';
+import SareeStories from '@/components/SareeStories';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQSection from '@/components/FAQSection';
 import Footer from '@/components/Footer';
@@ -41,8 +41,8 @@ const Index = () => (
     {/* All products */}
     <MarketplaceGrid title="Explore All" eyebrow="Full Collection" filter="all" limit={10} />
 
-    {/* Instagram CTA */}
-    <InstagramCTA />
+    {/* Best of our sarees — story cards */}
+    <SareeStories />
 
     <ReviewsSection />
     <FAQSection />
