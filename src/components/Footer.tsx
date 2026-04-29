@@ -42,9 +42,9 @@ const Footer = () => {
             <h4 className="font-section text-sm font-semibold uppercase tracking-widest text-background mb-4">Support</h4>
             <ul className="space-y-2 text-sm text-background/60">
               <li><Link to="/#faq" className="hover:text-secondary transition-colors">FAQ</Link></li>
-              <li><Link to="/#faq" className="hover:text-secondary transition-colors">Shipping Info</Link></li>
-              <li><Link to="/#faq" className="hover:text-secondary transition-colors">Return Policy</Link></li>
-              <li><Link to="/#faq" className="hover:text-secondary transition-colors">Contact Us</Link></li>
+              <li><Link to="/returns" className="hover:text-secondary transition-colors">Shipping Info</Link></li>
+              <li><Link to="/returns" className="hover:text-secondary transition-colors">Return Policy</Link></li>
+              <li><Link to="/contact" className="hover:text-secondary transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 

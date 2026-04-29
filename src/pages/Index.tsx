@@ -1,8 +1,11 @@
 import Header from '@/components/Header';
 import HeroSlider from '@/components/HeroSlider';
+import USPStrip from '@/components/USPStrip';
 import CategoryTiles from '@/components/CategoryTiles';
+import OccasionShop from '@/components/OccasionShop';
 import OfferBanner from '@/components/OfferBanner';
 import MarketplaceGrid from '@/components/MarketplaceGrid';
+import InstagramCTA from '@/components/InstagramCTA';
 import ReviewsSection from '@/components/ReviewsSection';
 import FAQSection from '@/components/FAQSection';
 import Footer from '@/components/Footer';
@@ -14,29 +17,32 @@ const Index = () => (
     <Header />
     <HeroSlider />
 
-    {/* Quick category tiles like Amazon/Flipkart */}
+    {/* Trust strip */}
+    <USPStrip />
+
+    {/* Sarees by weave + Jewellery banner with images & descriptions */}
     <CategoryTiles />
 
-    {/* Top deal banner */}
+    {/* Single top deal banner */}
     <OfferBanner single position={0} />
 
     {/* Trending / Best sellers */}
     <MarketplaceGrid title="Trending Now" eyebrow="Best Sellers" filter="bestseller" limit={10} />
 
-    {/* Multi-banner ad strip */}
-    <OfferBanner />
+    {/* Shop by occasion */}
+    <OccasionShop />
 
     {/* Deals of the day */}
     <MarketplaceGrid title="Deals of the Day" eyebrow="Limited Time" filter="discounted" limit={10} />
-
-    {/* Featured banner */}
-    <OfferBanner single position={1} />
 
     {/* New arrivals */}
     <MarketplaceGrid title="New Arrivals" eyebrow="Just In" filter="new" limit={10} />
 
     {/* All products */}
     <MarketplaceGrid title="Explore All" eyebrow="Full Collection" filter="all" limit={10} />
+
+    {/* Instagram CTA */}
+    <InstagramCTA />
 
     <ReviewsSection />
     <FAQSection />

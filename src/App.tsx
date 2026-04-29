@@ -12,6 +12,8 @@ import Collections from "./pages/Collections";
 import ProductDetail from "./pages/ProductDetail";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import Contact from "./pages/Contact";
+import Returns from "./pages/Returns";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -38,6 +40,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/product/:slug" element={<ProductDetail />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/returns" element={<Returns />} />
               <Route path="/aivy1027" element={<AdminLogin />} />
               <Route
                 path="/admin-dashboard"
