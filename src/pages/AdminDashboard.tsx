@@ -26,6 +26,8 @@ const emptyForm = {
   fabric: '',
   occasion: '',
   color: '',
+  material: '',
+  weight: '',
   stock: true,
   badge: '' as '' | 'new' | 'bestseller',
 };
@@ -80,6 +82,8 @@ const AdminDashboard = () => {
       fabric: p.fabric || '',
       occasion: p.occasion || '',
       color: p.color || '',
+      material: p.material || '',
+      weight: p.weight || '',
       stock: p.stock,
       badge: (p.badge || '') as '' | 'new' | 'bestseller',
     });
@@ -262,20 +266,41 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Fabric</label>
-                  <input value={form.fabric} onChange={e => setForm({ ...form, fabric: e.target.value })} className="w-full px-3 py-2 border border-border rounded text-sm" />
+              {form.category === 'Jewelry' ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Material</label>
+                    <input value={form.material} onChange={e => setForm({ ...form, material: e.target.value })} placeholder="e.g. Gold-plated, Silver, Kundan" className="w-full px-3 py-2 border border-border rounded text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Weight</label>
+                    <input value={form.weight} onChange={e => setForm({ ...form, weight: e.target.value })} placeholder="e.g. 25g" className="w-full px-3 py-2 border border-border rounded text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Occasion</label>
+                    <input value={form.occasion} onChange={e => setForm({ ...form, occasion: e.target.value })} className="w-full px-3 py-2 border border-border rounded text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Color</label>
+                    <input value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="w-full px-3 py-2 border border-border rounded text-sm" />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Occasion</label>
-                  <input value={form.occasion} onChange={e => setForm({ ...form, occasion: e.target.value })} className="w-full px-3 py-2 border border-border rounded text-sm" />
+              ) : (
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Fabric</label>
+                    <input value={form.fabric} onChange={e => setForm({ ...form, fabric: e.target.value })} className="w-full px-3 py-2 border border-border rounded text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Occasion</label>
+                    <input value={form.occasion} onChange={e => setForm({ ...form, occasion: e.target.value })} className="w-full px-3 py-2 border border-border rounded text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Color</label>
+                    <input value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="w-full px-3 py-2 border border-border rounded text-sm" />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Color</label>
-                  <input value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="w-full px-3 py-2 border border-border rounded text-sm" />
-                </div>
-              </div>
+              )}
 
               <div>
                 <label className="block text-xs font-section uppercase tracking-wider text-muted-foreground mb-1">Short Description</label>
