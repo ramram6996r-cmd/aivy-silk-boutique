@@ -39,8 +39,8 @@ const Collections = () => {
         return tokens.every(t => haystack.includes(t));
       });
     }
-    if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
-    if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
+    if (sortBy === 'price-low') result.sort((a, b) => Number(a.price) - Number(b.price));
+    if (sortBy === 'price-high') result.sort((a, b) => Number(b.price) - Number(a.price));
     if (sortBy === 'newest') result.sort((a, b) => (b.badge === 'new' ? 1 : 0) - (a.badge === 'new' ? 1 : 0));
     return result;
   }, [products, selectedCategory, selectedSubcategory, sortBy]);
