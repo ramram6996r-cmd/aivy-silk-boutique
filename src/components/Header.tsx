@@ -96,7 +96,7 @@ const Header = () => {
             <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 hover:text-primary transition-colors">
               <Search size={20} />
             </button>
-            <button onClick={() => setCartOpen(true)} className="p-2 hover:text-primary transition-colors relative">
+            <button onClick={() => { setSearchOpen(false); setCartOpen(true); }} className="p-2 hover:text-primary transition-colors relative">
               <ShoppingBag size={20} />
               {cartCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{cartCount}</span>
