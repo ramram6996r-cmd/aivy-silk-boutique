@@ -85,6 +85,7 @@ const Header = () => {
                     ))}
                   </div>
                 </div>
+                </div>
               )}
             </div>
             <Link to="/collections" className="hover:text-primary transition-colors">New Arrivals</Link>
