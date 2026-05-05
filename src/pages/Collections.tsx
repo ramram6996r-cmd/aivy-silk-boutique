@@ -24,11 +24,16 @@ const Collections = () => {
     let result = [...products];
     if (selectedCategory) result = result.filter(p => p.category === selectedCategory);
     if (selectedSubcategory) {
-      result = result.filter(p =>
-        p.subcategory === selectedSubcategory ||
-        p.fabric === selectedSubcategory ||
-        p.occasion === selectedSubcategory,
-      );
+      const q = selectedSubcategory.toLowerCase().trim();
+      const tokens = q.split(/\s+/).filter(Boolean);
+      result = result.filter(p => {
+        const haystack = [
+          p.name, p.category, p.subcategory, p.fabric, p.occasion,
+          p.color, p.material, p.description,
+        ].filter(Boolean).join(' ').toLowerCase();
+        // match if every token appears somewhere (so "cotton sarees" matches cotton items)
+        return tokens.every(t => haystack.includes(t));
+      });
     }
     if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
     if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
