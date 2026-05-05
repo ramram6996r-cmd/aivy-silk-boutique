@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Header from '@/components/Header';
@@ -19,6 +19,10 @@ const Collections = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState(initialFilter);
   const [sortBy, setSortBy] = useState('relevance');
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    setSelectedSubcategory(searchParams.get('filter') || '');
+  }, [searchParams]);
 
   const filtered = useMemo(() => {
     let result = [...products];

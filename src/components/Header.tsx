@@ -66,7 +66,8 @@ const Header = () => {
                 Collections <ChevronDown size={14} />
               </Link>
               {megaOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-background border border-border rounded-lg shadow-luxury p-8 min-w-[600px] animate-fade-in">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 min-w-[600px] animate-fade-in z-50">
+                <div className="bg-background border border-border rounded-lg shadow-luxury p-8">
                   <div className="grid grid-cols-3 gap-8">
                     {Object.entries(megaMenuData).map(([category, items]) => (
                       <div key={category}>
@@ -83,6 +84,7 @@ const Header = () => {
                       </div>
                     ))}
                   </div>
+                </div>
                 </div>
               )}
             </div>
