@@ -93,7 +93,7 @@ const Header = () => {
 
           {/* Icons */}
           <div className="flex items-center gap-3">
-            <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 hover:text-primary transition-colors">
+            <button onClick={() => { setCartOpen(false); setSearchOpen(!searchOpen); }} className="p-2 hover:text-primary transition-colors">
               <Search size={20} />
             </button>
             <button onClick={() => { setSearchOpen(false); setCartOpen(true); }} className="p-2 hover:text-primary transition-colors relative">
