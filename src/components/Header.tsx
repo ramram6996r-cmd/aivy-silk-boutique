@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingBag, Menu, X, ChevronDown } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
 import logo from '@/assets/logo.jpg';
@@ -16,6 +16,17 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) return;
+    navigate(`/collections?filter=${encodeURIComponent(q)}`);
+    setSearchOpen(false);
+    setSearchQuery('');
+  };
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40);
@@ -96,10 +107,20 @@ const Header = () => {
         {searchOpen && (
           <div className="border-t border-border py-4 px-4 animate-fade-in">
             <div className="container mx-auto">
-              <div className="relative max-w-xl mx-auto">
+              <form onSubmit={handleSearchSubmit} className="relative max-w-xl mx-auto">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                <input type="text" placeholder="Search for sarees, fabrics, occasions..." className="w-full pl-10 pr-4 py-3 bg-muted rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" autoFocus />
-              </div>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search for sarees, fabrics, occasions..."
+                  className="w-full pl-10 pr-24 py-3 bg-muted rounded-lg font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  autoFocus
+                />
+                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-primary-foreground rounded-md text-xs font-section uppercase tracking-wider hover:opacity-90 transition-opacity">
+                  Search
+                </button>
+              </form>
             </div>
           </div>
         )}
